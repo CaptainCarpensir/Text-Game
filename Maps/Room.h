@@ -1,8 +1,8 @@
 #ifndef ROOM
 #define ROOM
 using namespace std;
-#include "Enemy.h"
-#include "Loot.h"
+#include "../Populations/Enemy.h"
+#include "../Populations/Loot.h"
 #include <string>
 
 class Room
@@ -12,7 +12,7 @@ class Room
 		const static int NUM_DIR = 4;
 
 		//Variables
-		char m_id;
+		char id;
 
 		/*
 		* Direction open means that the bool dictates whether the adjacent room can be traveled to in this form
@@ -20,7 +20,7 @@ class Room
 		*  W(3) - E(1)   [0] [1] [2] [3]
 		*     S(2)       T/F T/F T/F T/F
 		*/
-		bool m_dir_open[NUM_DIR];
+		bool dir_open[NUM_DIR];
 	public:
 
 		/*

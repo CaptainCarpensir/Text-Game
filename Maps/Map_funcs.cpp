@@ -10,13 +10,13 @@ Map::Map()
 	int exits = NUM_EXITS;
 	int start = STARTING_ROOMS;
 	int basic_rooms = (GRID_SIZE * GRID_SIZE) - exits - start;
-	m_start_pos = Coord();
+	start_pos = Coord();
 
 	//Creating grid
-	m_grid = new Room*[GRID_SIZE];
+	grid = new Room*[GRID_SIZE];
 	for (int i = 0; i < GRID_SIZE; i++)
 	{
-		m_grid[i] = new Room[GRID_SIZE];
+		grid[i] = new Room[GRID_SIZE];
 	}
 
 	//Assigning rooms
@@ -31,20 +31,20 @@ Map::Map()
 			
 			if(curr_exit)
 			{
-				m_grid[y][x] = Room(EXIT);
+				grid[y][x] = Room(EXIT);
 				exits--;
 			}
 			if(curr_start)
 			{
 				start--;
-				m_grid[y][x] = Room(START);
-				m_start_pos.m_x = x;
-				m_start_pos.m_y = y;
+				grid[y][x] = Room(START);
+				start_pos.x = x;
+				start_pos.y = y;
 			}
 			if (!curr_exit && !curr_start)
 			{
 				basic_rooms--;
-				m_grid[y][x] = Room(select_room());
+				grid[y][x] = Room(select_room());
 			}
 
 			//Randomly generate room movement
@@ -54,14 +54,14 @@ Map::Map()
 				for (int d = 0; d < 4; d++)
 				{
 					bool if_open = (rand() % 100) < (OPEN_CHANCE * 100);
-					m_grid[y][x].set_open(d,if_open);
+					grid[y][x].set_open(d,if_open);
 				}
 			}
 			else
 			{
 				for (int d = 0; d < 4; d++)
 				{
-					m_grid[y][x].set_open(d,true);
+					grid[y][x].set_open(d,true);
 				}
 			}
 		}
@@ -81,37 +81,37 @@ Map::Map()
 				case 0:
 					if (y == 0)
 					{
-						m_grid[y][x].set_open(d, false);
+						grid[y][x].set_open(d, false);
 						break;
 					}
-					if (!m_grid[y - 1][x].get_open(SOUTH)) m_grid[y][x].set_open(NORTH, false);
+					if (!grid[y - 1][x].get_open(SOUTH)) grid[y][x].set_open(NORTH, false);
 					break;
 					//Check east adjacency
 				case 1:
 					if (x ==  GRID_SIZE - 1)
 					{
-						m_grid[y][x].set_open(d, false);
+						grid[y][x].set_open(d, false);
 						break;
 					}
-					if (!m_grid[y][x + 1].get_open(WEST)) m_grid[y][x].set_open(EAST, false);
+					if (!grid[y][x + 1].get_open(WEST)) grid[y][x].set_open(EAST, false);
 					break;
 					//Check south adjacency
 				case 2:
 					if (y == GRID_SIZE - 1)
 					{
-						m_grid[y][x].set_open(d, false);
+						grid[y][x].set_open(d, false);
 						break;
 					}
-					if (!m_grid[y + 1][x].get_open(NORTH)) m_grid[y][x].set_open(SOUTH, false);
+					if (!grid[y + 1][x].get_open(NORTH)) grid[y][x].set_open(SOUTH, false);
 					break;
 					//Check west adjacency
 				case 3:
 					if (x == 0)
 					{
-						m_grid[y][x].set_open(d, false);
+						grid[y][x].set_open(d, false);
 						break;
 					}
-					if (!m_grid[y][x - 1].get_open(EAST)) m_grid[y][x].set_open(WEST, false);
+					if (!grid[y][x - 1].get_open(EAST)) grid[y][x].set_open(WEST, false);
 					break;
 				}
 			}
@@ -125,10 +125,10 @@ Map::~Map()
 	//Deleting grid rows
 	for (int i = 0; i < GRID_SIZE; i++)
 	{
-		delete[] m_grid[i];
+		delete[] grid[i];
 	}
 	//Deleting final grid
-	delete[] m_grid;
+	delete[] grid;
 }
 
 //Insertion Operator Overload
@@ -142,7 +142,7 @@ ostream& operator<<(ostream& os, Map& map)
 			bool is_open = false;
 			for (int d = 0; d < Map::NUM_DIR; d++)
 			{
-				if(map.m_grid[y][x].get_open(d)) is_open = true;
+				if(map.grid[y][x].get_open(d)) is_open = true;
 			}
 			if (!is_open)
 			{
@@ -150,9 +150,9 @@ ostream& operator<<(ostream& os, Map& map)
 			}
 			else
 			{
-				os << "[" << map.m_grid[y][x] << "]";
+				os << "[" << map.grid[y][x] << "]";
 			}
-			if(map.m_grid[y][x].get_open(1)) 
+			if(map.grid[y][x].get_open(1)) 
 			{
 				 os << "--";
 			}
@@ -165,7 +165,7 @@ ostream& operator<<(ostream& os, Map& map)
 		//Display adjacency to bottom
 		for (int x = 0; x < map.GRID_SIZE; x++)
 		{
-			if (map.m_grid[y][x].get_open(2))
+			if (map.grid[y][x].get_open(2))
 			{
 				if (x == 0)
 				{
@@ -196,13 +196,13 @@ ostream& operator<<(ostream& os, Map& map)
 //Get function for the starting position
 Coord Map::get_start() const
 {
-	return m_start_pos;
+	return start_pos;
 }
 
 //Get function for a room at a specified value
 Room& Map::get_room(const Coord coor) const
 {
-	return m_grid[coor.m_y][coor.m_x];
+	return grid[coor.y][coor.x];
 }
 
 //Returns a random room type with weighted chance

@@ -6,27 +6,27 @@ using namespace std;
 
 struct Coord
 {
-	int m_x;
-	int m_y;
+	int x;
+	int y;
 
 	//Default constructor sets coordinates to 0
 	Coord()
 	{
-		m_x = 0;
-		m_y = 0;
+		x = 0;
+		y = 0;
 	}
 
 	//Set coordinates to parameters
-	Coord(int x, int y)
+	Coord(int new_x, int new_y)
 	{
-		m_x = x;
-		m_y = y;
+		x = new_x;
+		y = new_y;
 	}
 
 	//Insertion operator for coordinates
 	friend ostream& operator<<(ostream& os, Coord& coor)
 	{
-		os << "(" << coor.m_x << "," << coor.m_y << ")";
+		os << "(" << coor.x << "," << coor.y << ")";
 		return os;
 	}
 };
@@ -75,8 +75,8 @@ class Map
 		const double OPEN_CHANCE = 0.85;
 	private:
 		//Variables
-		Room **m_grid;
-		Coord m_start_pos;
+		Room **grid;
+		Coord start_pos;
 	public:
 		/*
 		* NO REQUIRED COPY CONSTRUCTOR OR COPY ASSIGNMENT AS ONLY 1 MAP WILL BE CREATED PER PROGRAM RUN

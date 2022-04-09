@@ -4,28 +4,28 @@ using namespace std;
 //Default Constructor
 Player::Player()
 {
-	m_hp = START_HP;
-	m_inv = new Loot[0];
-	m_pos = Coord(0,0);
+	hp = START_HP;
+	inv = new Loot[0];
+	pos = Coord(0,0);
 }
 
 Player::Player(const Coord start)
 {
-	m_hp = START_HP;
-	m_inv = new Loot[0];
-	m_pos = start;
+	hp = START_HP;
+	inv = new Loot[0];
+	pos = start;
 }
 
 //Destructor
 Player::~Player()
 {
-	delete[] m_inv;
+	delete[] inv;
 }
 
 //Insertion Operator Overload
 ostream& operator<<(ostream& os, Player& player)
 {
-	os << player.m_pos;
+	os << player.pos;
 	return os;
 }
 
@@ -34,26 +34,26 @@ ostream& operator<<(ostream& os, Player& player)
 */
 bool Player::move(const int dir, const Map& map)
 {
-	bool move = map.get_room(m_pos).get_open(dir);
+	bool move = map.get_room(pos).get_open(dir);
 	if (move)
 	{
 		switch (dir)
 		{
 			//North
 		case 0:
-			m_pos.m_y--;
+			pos.y--;
 			break;
 			//East
 		case 1:
-			m_pos.m_x++;
+			pos.x++;
 			break;
 			//South
 		case 2:
-			m_pos.m_y++;
+			pos.y++;
 			break;
 			//West
 		case 3:
-			m_pos.m_x--;
+			pos.x--;
 			break;
 			//Player input doesn't have a direction
 		default:
@@ -65,5 +65,5 @@ bool Player::move(const int dir, const Map& map)
 
 Coord Player::get_pos() const
 {
-	return m_pos;
+	return pos;
 }

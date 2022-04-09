@@ -3,26 +3,26 @@ using namespace std;
 #include "Map.h"
 
 //Constructor w/ size and starting coordinate
-TempMap::TempMap(const int size, const Coord start, const Map& map)
+TempMap::TempMap(const int max_size, const Coord start, const Map& map)
 {
 	//Setting rectangle size
-	m_w = 1;
-	m_h = 1;
+	w = 1;
+	h = 1;
 
 	//Player & corner pos
-	m_p = start;
-	m_base = start;
+	p = start;
+	base = start;
 
 	//Total size
-	m_size = size;
+	size = max_size;
 
 	//Creating base array
-	m_grid = new Room * [m_size];
-	m_explored = new bool * [m_size];
-	for (int i = 0; i < m_size; i++)
+	grid = new Room * [size];
+	explored = new bool * [size];
+	for (int i = 0; i < size; i++)
 	{
-		m_grid[i] = new Room[m_size];
-		m_explored[i] = new bool[m_size];
+		grid[i] = new Room[size];
+		explored[i] = new bool[size];
 	}
 
 	//Filling rooms w/ correct rooms
@@ -30,37 +30,37 @@ TempMap::TempMap(const int size, const Coord start, const Map& map)
 	{
 		for (int x = 0; x < size; x++)
 		{
-			m_grid[y][x] = map.get_room(Coord(x,y));
-			m_explored[y][x] = false;
+			grid[y][x] = map.get_room(Coord(x,y));
+			explored[y][x] = false;
 		}
 	}
-	m_explored[m_p.m_y][m_p.m_x] = true;
+	explored[p.y][p.x] = true;
 }
 
 //Copy Constructor, not needed yet, might delete
 TempMap::TempMap(const TempMap& obj)
 {
 	//Deleting data
-	for (int i = 0; i < m_h; i++)
+	for (int i = 0; i < h; i++)
 	{
-		delete[] m_grid[i];
+		delete[] grid[i];
 	}
-	delete[] m_grid;
+	delete[] grid;
 	
 	//Setting new rectangle size
-	m_w = obj.m_w;
-	m_h = obj.m_h;
+	w = obj.w;
+	h = obj.h;
 	
 	//Player & corner pos
 
 	//Creating new grid
-	m_grid = new Room*[m_h];
-	for (int i = 0; i < m_h; i++)
+	grid = new Room*[h];
+	for (int i = 0; i < h; i++)
 	{
-		m_grid[i] = new Room[m_w];
-		for (int j = 0; j < m_w; j++)
+		grid[i] = new Room[w];
+		for (int j = 0; j < w; j++)
 		{
-			m_grid[i][j] = obj.m_grid[i][j];
+			grid[i][j] = obj.grid[i][j];
 		}
 	}
 	
@@ -69,11 +69,11 @@ TempMap::TempMap(const TempMap& obj)
 //Destructor
 TempMap::~TempMap()
 {
-	for (int i = 0; i < m_h; i++)
+	for (int i = 0; i < h; i++)
 	{
-		delete[] m_grid[i];
+		delete[] grid[i];
 	}
-	delete[] m_grid;
+	delete[] grid;
 }
 
 //Insertion Operator Overload
@@ -88,11 +88,11 @@ ostream& operator<<(ostream& os, TempMap& map)
 	bool prev_seen = false;
 
 	//SHOWING TOP ROW CORRIDORS
-	for (int x = map.m_base.m_x; x < map.m_base.m_x + map.m_w; x++)
+	for (int x = map.base.x; x < map.base.x + map.w; x++)
 	{
-		if (map.m_explored[map.m_base.m_y][x])
+		if (map.explored[map.base.y][x])
 		{
-			if (map.m_grid[map.m_base.m_y][x].get_open(Map::NORTH))
+			if (map.grid[map.base.y][x].get_open(Map::NORTH))
 			{
 				os << "   | ";
 			}
@@ -108,38 +108,38 @@ ostream& operator<<(ostream& os, TempMap& map)
 	}
 	os << "\n";
 	
-	for (int y = map.m_base.m_y; y < map.m_base.m_y + map.m_h; y++)
+	for (int y = map.base.y; y < map.base.y + map.h; y++)
 	{
 
 		//SHOWING HORIZONTAL CORRIDORS AND ROOM GRIDS
 		prev_seen = false;
-		for (int x = map.m_base.m_x; x < map.m_base.m_x + map.m_w; x++)
+		for (int x = map.base.x; x < map.base.x + map.w; x++)
 		{
-			if (!prev_seen && map.m_explored[y][x])
+			if (!prev_seen && map.explored[y][x])
 			{
-				if (map.m_grid[y][x].get_open(Map::WEST))
+				if (map.grid[y][x].get_open(Map::WEST))
 				{
-					if (x == map.m_p.m_x && y == map.m_p.m_y)
+					if (x == map.p.x && y == map.p.y)
 					{
 						os << "--[H]";
 					}
 					else
 					{
-						os << "--[" << map.m_grid[y][x].get_id() << "]";
+						os << "--[" << map.grid[y][x].get_id() << "]";
 					}
 				}
 				else
 				{
-					if (x == map.m_p.m_x && y == map.m_p.m_y)
+					if (x == map.p.x && y == map.p.y)
 					{
 						os << "  [H]";
 					}
 					else
 					{
-						os << "  [" << map.m_grid[y][x].get_id() << "]";
+						os << "  [" << map.grid[y][x].get_id() << "]";
 					}
 				}
-				if (map.m_grid[y][x].get_open(Map::EAST))
+				if (map.grid[y][x].get_open(Map::EAST))
 				{
 					os << "--";
 				}
@@ -151,32 +151,32 @@ ostream& operator<<(ostream& os, TempMap& map)
 			}
 			else
 			{
-				if (prev_seen && map.m_explored[y][x])
+				if (prev_seen && map.explored[y][x])
 				{
-					if (map.m_grid[y][x].get_open(Map::EAST))
+					if (map.grid[y][x].get_open(Map::EAST))
 					{
-						if (x == map.m_p.m_x && y == map.m_p.m_y)
+						if (x == map.p.x && y == map.p.y)
 						{
 							os << "[H]" << "--";
 						}
 						else
 						{
-							os << "[" << map.m_grid[y][x].get_id() << "]" << "--";
+							os << "[" << map.grid[y][x].get_id() << "]" << "--";
 						}
 					}
 					else
 					{
-						if (x == map.m_p.m_x && y == map.m_p.m_y)
+						if (x == map.p.x && y == map.p.y)
 						{	
 							os << "[H]" << "  ";
 						}
 						else
 						{
-							os << "[" << map.m_grid[y][x].get_id() << "]" << "  ";
+							os << "[" << map.grid[y][x].get_id() << "]" << "  ";
 						}
 					}
 				}
-				if (!map.m_explored[y][x]) 
+				if (!map.explored[y][x]) 
 				{
 					if(!prev_seen)
 					{
@@ -190,11 +190,11 @@ ostream& operator<<(ostream& os, TempMap& map)
 		os << "\n";
 
 		//SHOWING CORRIDORS BELOW
-		for (int x = map.m_base.m_x; x < map.m_base.m_x + map.m_w; x++)
+		for (int x = map.base.x; x < map.base.x + map.w; x++)
 		{
-			if (map.m_explored[y][x])
+			if (map.explored[y][x])
 			{
-				if (map.m_grid[y][x].get_open(Map::SOUTH))
+				if (map.grid[y][x].get_open(Map::SOUTH))
 				{
 					os << "   | ";
 				}
@@ -205,11 +205,11 @@ ostream& operator<<(ostream& os, TempMap& map)
 			}
 			else
 			{
-				if (y <= map.m_base.m_y + map.m_h)
+				if (y <= map.base.y + map.h)
 				{
-					if (map.m_explored[y + 1][x])
+					if (map.explored[y + 1][x])
 					{
-						if (map.m_grid[y + 1][x].get_open(Map::NORTH))
+						if (map.grid[y + 1][x].get_open(Map::NORTH))
 						{
 							os << "   | ";
 						}
@@ -243,39 +243,39 @@ void TempMap::move_player(const int dir)
 	switch (dir)
 	{
 		case Map::NORTH:
-			m_p.m_y--;
-			if (m_p.m_y < m_base.m_y)
+			p.y--;
+			if (p.y < base.y)
 			{
-				m_base.m_y--;
-				m_h++;
+				base.y--;
+				h++;
 			}
 			break;
 		case Map::EAST:
-			m_p.m_x++;
-			if (m_p.m_x > m_base.m_x + m_w - 1)
+			p.x++;
+			if (p.x > base.x + w - 1)
 			{
-				m_w++;
+				w++;
 			}
 			break;
 		case Map::SOUTH:
-			m_p.m_y++;
-			if (m_p.m_y > m_base.m_y + m_h - 1)
+			p.y++;
+			if (p.y > base.y + h - 1)
 			{
-				m_h++;
+				h++;
 			}
 			break;
 		case Map::WEST:
-			m_p.m_x--;
-			if (m_p.m_x < m_base.m_x)
+			p.x--;
+			if (p.x < base.x)
 			{
-				m_base.m_x--;
-				m_w++;
+				base.x--;
+				w++;
 			}
 			break;
 	}
 
 	//Exploring new areas after moved
-	if(!m_explored[m_p.m_y][m_p.m_x]) m_explored[m_p.m_y][m_p.m_x] = true;
+	if(!explored[p.y][p.x]) explored[p.y][p.x] = true;
 
 	return;
 }

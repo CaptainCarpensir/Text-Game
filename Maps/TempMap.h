@@ -9,25 +9,25 @@ class TempMap
 {
 	private:
 		//Variables
-		Room** m_grid;
-		bool** m_explored;
+		Room** grid;
+		bool** explored;
 
 		//Size of full map
-		int m_size;
+		int size;
 
 		//Width of shown map
-		int m_w;
-		int m_h;
+		int w;
+		int h;
 
 		//Position of the top left corner of shown map
-		Coord m_base;
+		Coord base;
 
 		//Player position w/n the map
-		Coord m_p;
+		Coord p;
 
 	public:
 		//Constructor w/ size and starting pos
-		TempMap(const int size, const Coord start, const Map& map);
+		TempMap(const int max_size, const Coord start, const Map& map);
 
 		//Copy Constructor
 		TempMap(const TempMap& map);

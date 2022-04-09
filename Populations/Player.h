@@ -2,7 +2,7 @@
 #define PLAYER
 using namespace std;
 #include "Loot.h"
-#include "Map.h"
+#include "../Maps/Map.h"
 #include <iostream>
 
 class Player
@@ -11,9 +11,9 @@ class Player
     //Constants
     const int START_HP = 10;
   private:
-    int m_hp;
-    Loot *m_inv;
-    Coord m_pos;
+    int hp;
+    Loot *inv;
+    Coord pos;
   public:
     //Default Constructor
     Player();

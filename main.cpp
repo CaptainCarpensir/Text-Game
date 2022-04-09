@@ -1,7 +1,7 @@
 using namespace std;
-#include "Map.h"
-#include "Player.h"
-#include "TempMap.h"
+#include "Maps/Map.h"
+#include "Populations/Player.h"
+#include "Maps/TempMap.h"
 #include <iostream>
 #include <random>
 
@@ -44,9 +44,7 @@ int main()
 	//Game loop
 	while (playing)
 	{
-		//Displaying Map
-		cout << "\n\n\n" << map << endl;
-
+		cout << map << endl;
 		//Getting and parsing input
 		cout << "What will you do: ";
 		getline(cin, input);
@@ -65,6 +63,10 @@ int main()
 				command = -1;
 			}
 		}
+
+		//Clear terminal outputs and reset cursor
+		cout << "\033[H" << endl;
+		cout << "\033[2J" << endl;
 
 		//Enacting upon commands
 		switch (command)
@@ -86,6 +88,7 @@ int main()
 				/*
 				*  
 				*/
+				cout << "NOT IMPLEMENTED YET" << endl;
 				break;
 			default:
 				cout << "Sorry bumhead, that command doesn't exist" << endl;
@@ -103,7 +106,7 @@ int main()
 		delete[] ptr;
 	}
 
-	cout << "\n\tThank you for playing!" << endl;
+	cout << "\tThank you for playing!" << endl;
 
 	return 0;
 }
